@@ -1,20 +1,44 @@
 namespace Markdown;
+using Markdown.Tags;
 
-public class Md
+public static class Md
 {
-    public string Render(string markdownString){
-        var tokens = ParseToTokens(markdownString);
-        var result = ProcessingTokens(tokens);
-        return result;
+    public static void Main(){
+        
     }
-    
-    private List<Token> ParseToTokens(string markdownString){
-        var tokenizer = new Tokenizer().Tokenize(markdownString);
-        return tokenizer;
-    }
+    private static readonly List<ITagHandler> tagHandlers = new List<ITagHandler>
+            {
+                new BoldTag(),
+                new ItalicTag(),
+                new HeadingTag()
+            };
 
-    private string ProcessingTokens(List<Token> tokens){
-        var processingString = new ConverterHtml().ConvertTokens(tokens);
-        return processingString;
+    public static string Render(string markdownString)
+    {
+        int index = 0;
+        if (HelperFunctions.ContainsOnlyDash(markdownString))
+            return markdownString;
+
+        while (index < markdownString.Length)
+        {
+            bool tagProcessed = false;
+            if (!char.IsLetter(markdownString[index]))
+            {
+                foreach (var handler in tagHandlers)
+                {
+                    if (handler.IsTagStart(markdownString, index))
+                    {
+                        index = handler.ProcessTag(ref markdownString, index);
+                        tagProcessed = true;
+                        break;
+                    }
+                }
+            }
+            if (!tagProcessed)
+            {
+                index++;
+            }
+        }
+        return markdownString;
     }
 }

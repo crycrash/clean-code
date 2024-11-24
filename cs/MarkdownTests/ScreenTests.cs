@@ -1,15 +1,17 @@
+using Markdown;
+using FluentAssertions;
 namespace MarkdownTests;
 
 public class ScreenTests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     [Test]
-    public void Test1()
+    public void Test_BoldWithТestedItalic()
     {
-        Assert.Pass();
+        Md.Render("\\aaa").Should().Be("\\aaa");
+        Md.Render("\\__aaa__\\").Should().Be("__aaa__");
+        Md.Render("\\_aaa_\\").Should().Be("_aaa_");
+        Md.Render("\\#aaa\\").Should().Be("#aaa");
+        Md.Render("\\\\#aa\\").Should().Be("\\#aa");
+        Md.Render("\\#aa").Should().Be("\\#aa");
     }
 }
