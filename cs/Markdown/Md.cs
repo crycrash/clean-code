@@ -1,44 +1,42 @@
-namespace Markdown;
 using Markdown.Tags;
 
-public static class Md
+namespace Markdown;
+
+public class Md
 {
-    public static void Main(){
-        
-    }
-    private static readonly List<ITagHandler> tagHandlers = new List<ITagHandler>
-            {
-                new BoldTag(),
-                new ItalicTag(),
-                new HeadingTag()
-            };
+    private static readonly List<ITagHandler> TagHandlers =
+        [
+            new BoldTag(),
+            new ItalicTag(),
+            new HeadingTag()
+        ];
 
     public static string Render(string markdownString)
     {
-        int index = 0;
-        if (HelperFunctions.ContainsOnlyDash(markdownString))
+        if (string.IsNullOrEmpty(markdownString) || HelperFunctions.ContainsOnlyDash(markdownString))
             return markdownString;
 
+        int index = 0;
         while (index < markdownString.Length)
         {
-            bool tagProcessed = false;
-            if (!char.IsLetter(markdownString[index]))
+            if (TryProcessTag(ref markdownString, ref index))
+                continue;
+            index++;
+        }
+
+        return markdownString;
+    }
+
+    private static bool TryProcessTag(ref string markdownString, ref int index)
+    {
+        foreach (var handler in TagHandlers)
+        {
+            if (handler.IsTagStart(markdownString, index))
             {
-                foreach (var handler in tagHandlers)
-                {
-                    if (handler.IsTagStart(markdownString, index))
-                    {
-                        index = handler.ProcessTag(ref markdownString, index);
-                        tagProcessed = true;
-                        break;
-                    }
-                }
-            }
-            if (!tagProcessed)
-            {
-                index++;
+                index = handler.ProcessTag(ref markdownString, index);
+                return true;
             }
         }
-        return markdownString;
+        return false;
     }
 }
