@@ -9,14 +9,11 @@ public class Md
             new BoldTag(),
             new ItalicTag(),
             new HeadingTag(),
-            new BulletedList()
+            new EscapeTag()
         ];
 
     public static string Render(string markdownString)
     {
-        if (string.IsNullOrEmpty(markdownString) || HelperFunctions.ContainsOnlyDash(markdownString))
-            return markdownString;
-
         int index = 0;
         while (index < markdownString.Length)
         {

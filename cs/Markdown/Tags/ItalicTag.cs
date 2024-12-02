@@ -15,7 +15,7 @@ public class ItalicTag : BaseTagHandler
     {
         return HelperFunctions.FindCorrectCloseSymbolForItalic(text, startIndex + 1);
     }
-    
+
     protected override string ProcessNestedTag(ref string text)
     {
         return text;

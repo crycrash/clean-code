@@ -9,9 +9,8 @@ public abstract class BaseTagHandler : ITagHandler
 
     public virtual int ProcessTag(ref string text, int startIndex)
     {
-        var newIndex = HelperFunctions.ScreeningCheck(ref text, startIndex);
-        if (newIndex != startIndex)
-            return newIndex;
+        if (HelperFunctions.ContainsOnlyDash(text.Substring(startIndex)))
+            return text.Length;
 
         int endIndex = FindEndIndex(text, startIndex);
 

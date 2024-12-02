@@ -12,10 +12,6 @@ public class HeadingTag : BaseTagHandler
 
     public override int ProcessTag(ref string text, int startIndex)
     {
-        var newIndex = HelperFunctions.ScreeningCheck(ref text, startIndex);
-        if (newIndex != startIndex)
-            return newIndex;
-
         int endIndex = FindEndIndex(text, startIndex);
         string content = ExtractContent(text, startIndex, endIndex);
 
