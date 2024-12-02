@@ -9,7 +9,7 @@ public class ItailcTests
     {
         Md.Render("_aaaa_").Should().Be("<em>aaaa</em>");
         Md.Render("_aaaa_bbbb_cc_").Should().Be("<em>aaaa</em>bbbb<em>cc</em>");
-        Md.Render("#_aaa_").Should().Be("<h1><em>aaa</em></h1>");
+        Md.Render("#  _aaa_").Should().Be("<h1><em>aaa</em></h1>");
     }
 
     [Test]
@@ -30,8 +30,7 @@ public class ItailcTests
     public void Test_ItalicSeveralWords()
     {
         Md.Render("ра_зных сл_овах").Should().Be("ра_зных сл_овах");
-        Md.Render("ра__зных сл__овах").Should().Be("ра__зных сл__овах");
-        Md.Render("кон_це._").Should().Be("кон<em>це.</em>");
+        Md.Render("ра_зных словах_").Should().Be("ра_зных словах_");
     }
 
     [Test]

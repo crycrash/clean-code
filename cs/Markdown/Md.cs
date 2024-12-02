@@ -8,7 +8,8 @@ public class Md
         [
             new BoldTag(),
             new ItalicTag(),
-            new HeadingTag()
+            new HeadingTag(),
+            new BulletedList()
         ];
 
     public static string Render(string markdownString)
@@ -19,8 +20,11 @@ public class Md
         int index = 0;
         while (index < markdownString.Length)
         {
-            if (TryProcessTag(ref markdownString, ref index))
-                continue;
+            if (!char.IsLetter(markdownString[index]))
+            {
+                if (TryProcessTag(ref markdownString, ref index))
+                    continue;
+            }
             index++;
         }
 

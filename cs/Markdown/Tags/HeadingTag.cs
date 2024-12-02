@@ -6,13 +6,50 @@ public class HeadingTag : BaseTagHandler
 
     public override bool IsTagStart(string text, int index)
     {
-        return text[index].ToString() == Symbol;
+        return text[index].ToString() == Symbol && index + 1 < text.Length &&
+        char.IsWhiteSpace(text[index + 1]);
+    }
+
+    public override int ProcessTag(ref string text, int startIndex)
+    {
+        var newIndex = HelperFunctions.ScreeningCheck(ref text, startIndex);
+        if (newIndex != startIndex)
+            return newIndex;
+
+        int endIndex = FindEndIndex(text, startIndex);
+        string content = ExtractContent(text, startIndex, endIndex);
+
+        content = ProcessNestedTag(ref content);
+        string replacement = WrapWithHtmlTag(content);
+        text = ReplaceText(text, startIndex, endIndex, replacement);
+
+        return startIndex + replacement.Length;
+    }
+
+    protected override string ExtractContent(string text, int startIndex, int endIndex)
+    {
+        startIndex = FindStartIndex(text, startIndex + 1);
+        return text.Substring(startIndex, endIndex - startIndex);
     }
 
     protected override int FindEndIndex(string text, int startIndex)
     {
         int endIndex = text.IndexOf('\n', startIndex + 1);
         return endIndex == -1 ? text.Length : endIndex;
+    }
+
+    private int FindStartIndex(string text, int startIndex)
+    {
+        if (string.IsNullOrEmpty(text))
+            return -1;
+
+        for (int i = startIndex; i < text.Length; i++)
+        {
+            if (!char.IsWhiteSpace(text[i]))
+                return i;
+        }
+
+        return -1;
     }
 
     protected override string ReplaceText(string text, int startIndex, int endIndex, string replacement)

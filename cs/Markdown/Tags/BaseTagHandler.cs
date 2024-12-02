@@ -7,7 +7,7 @@ public abstract class BaseTagHandler : ITagHandler
 
     public abstract bool IsTagStart(string text, int index);
 
-    public int ProcessTag(ref string text, int startIndex)
+    public virtual int ProcessTag(ref string text, int startIndex)
     {
         var newIndex = HelperFunctions.ScreeningCheck(ref text, startIndex);
         if (newIndex != startIndex)
