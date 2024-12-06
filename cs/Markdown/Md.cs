@@ -17,7 +17,7 @@ public class Md
         int index = 0;
         while (index < markdownString.Length)
         {
-            if (!char.IsLetter(markdownString[index]))
+            if (HelperFunctions.CanBeTag(markdownString[index]))
             {
                 if (TryProcessTag(ref markdownString, ref index))
                     continue;

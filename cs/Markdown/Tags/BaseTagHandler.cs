@@ -11,14 +11,19 @@ public abstract class BaseTagHandler : ITagHandler
     {
         if (HelperFunctions.ContainsOnlyDash(text.Substring(startIndex)))
             return text.Length;
+        if (HelperFunctions.ContainsUnderscore(text))
+        {
+            if (CheckTagIntersections(text))
+                return text.Length;
+        }
 
         int endIndex = FindEndIndex(text, startIndex);
-
         if (endIndex == -1)
             return startIndex + Symbol.Length;
 
         string content = ExtractContent(text, startIndex, endIndex);
-        if (HelperFunctions.ContainsWhiteSpaces(content))
+
+        if (!AreTagsCorrectlyPositioned(text, startIndex, endIndex, content))
             return startIndex + content.Length;
 
         content = ProcessNestedTag(ref content);
@@ -28,6 +33,46 @@ public abstract class BaseTagHandler : ITagHandler
         return startIndex + replacement.Length;
     }
 
+    private bool CheckTagIntersections(string text)
+    {
+        (List<int> singleUnderscoreIndexes, List<int> doubleUnderscoreIndexes) = HelperFunctions.GetUnderscoreIndexes(text);
+
+        if (!HelperFunctions.HasUnpairedTags(singleUnderscoreIndexes, doubleUnderscoreIndexes))
+            return false;
+
+        for (int i = 0; i < singleUnderscoreIndexes.Count - 1; i++)
+        {
+            for (int j = 0; j < doubleUnderscoreIndexes.Count - 1; j++)
+            {
+                int[] segment1 = { singleUnderscoreIndexes[i], singleUnderscoreIndexes[i + 1] };
+                int[] segment2 = { doubleUnderscoreIndexes[j], doubleUnderscoreIndexes[j + 1] };
+                if (HelperFunctions.AreSegmentsIntersecting(segment1, segment2))
+                {
+                    if (HelperFunctions.AreSegmentsNested(segment1, segment2))
+                        continue;
+                        
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    private bool AreTagsCorrectlyPositioned(string text, int startIndex, int endIndex, string content)
+    {
+        if (!content.Contains(' '))
+            return true;
+        if (startIndex - 1 >= 0 && (char.IsLetter(text[startIndex - 1]) || char.IsDigit(text[startIndex - 1])))
+            return false;
+        if (endIndex + 1 < text.Length && (char.IsLetter(text[endIndex + 1]) || char.IsDigit(text[endIndex + 1])))
+            return false;
+        if (char.IsWhiteSpace(content.First()) || char.IsWhiteSpace(content.Last()))
+            return false;
+        return true;
+    }
+
     protected virtual string ProcessNestedTag(ref string text)
     {
         return HelperFunctions.ProcessNestedTag(ref text);
@@ -35,8 +80,25 @@ public abstract class BaseTagHandler : ITagHandler
 
     protected virtual int FindEndIndex(string text, int startIndex)
     {
-        return text.IndexOf(Symbol, startIndex + Symbol.Length);
+        int currentIndex = startIndex + Symbol.Length;
+
+        while (currentIndex < text.Length)
+        {
+            currentIndex = text.IndexOf(Symbol, currentIndex);
+            if (currentIndex == -1)
+                return -1;
+            if (currentIndex + Symbol.Length < text.Length && char.IsDigit(text[currentIndex + Symbol.Length]))
+            {
+                currentIndex += Symbol.Length;
+                continue;
+            }
+
+            return currentIndex;
+        }
+
+        return -1;
     }
+
 
     protected virtual string ExtractContent(string text, int startIndex, int endIndex)
     {

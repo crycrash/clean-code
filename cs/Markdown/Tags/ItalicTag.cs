@@ -6,9 +6,13 @@ public class ItalicTag : BaseTagHandler
 
     public override bool IsTagStart(string text, int index)
     {
-        return text[index].ToString() == Symbol
-               && index + 1 < text.Length
-               && !char.IsWhiteSpace(text[index + 1]);
+        if (text[index].ToString() != Symbol)
+            return false;
+        if (index + 1 < text.Length && char.IsWhiteSpace(text[index + 1]))
+            return false;
+        if (index - 1 >= 0 && char.IsDigit(text[index - 1]))
+            return false;
+        return true;
     }
 
     protected override int FindEndIndex(string text, int startIndex)
