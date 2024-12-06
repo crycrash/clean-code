@@ -8,6 +8,8 @@ public class BoldTests
     [Test]
     public void Test_StandartBoldWord()
     {
+        Md.Render("__abc__4__").Should().Be("<strong>abc__4</strong>");
+        Md.Render("__abc__4").Should().Be("__abc__4");
         Md.Render("__aa    bb__  __cc   aa__").Should().Be("<strong>aa    bb</strong>  <strong>cc   aa</strong>");
         Md.Render("__aa    bb__").Should().Be("<strong>aa    bb</strong>");
         Md.Render("__aaaa__").Should().Be("<strong>aaaa</strong>");

@@ -8,15 +8,17 @@ public class BorderlineCasesTests
     [Test]
     public void Test_TextWithDigits()
     {
-        Md.Render("_aaa12_3_a_").Should().Be("<em>aaa12_3_a</em>");
-        Md.Render("__aaa12_3_a__").Should().Be("<strong>aaa12_3_a</strong>");
-        Md.Render("_123_").Should().Be("<em>123</em>");
-        Md.Render("__123__").Should().Be("<strong>123</strong>");
+        Md.Render("__aaa12__3__a").Should().Be("__aaa12__3__a");
         Md.Render("__12__3").Should().Be("__12__3");
         Md.Render("_12_3").Should().Be("_12_3");
-        Md.Render("__aaa12__3__a").Should().Be("<strong>aaa12__3</strong>a");
+        Md.Render("_aaa12_3_a_").Should().Be("<em>aaa12_3_a</em>");
+        Md.Render("__aaa12_3_a__").Should().Be("<strong>aaa12_3_a</strong>");
         Md.Render("_aaa12__3__a_").Should().Be("<em>aaa12__3__a</em>");
         Md.Render("__aaa12__3__a__").Should().Be("<strong>aaa12__3__a</strong>");
+        Md.Render("_123_").Should().Be("<em>123</em>");
+        Md.Render("__123__").Should().Be("<strong>123</strong>");
+        Md.Render("_123_  _a_").Should().Be("<em>123</em>  <em>a</em>");
+        Md.Render("__123__  __a__").Should().Be("<strong>123</strong>  <strong>a</strong>");
     }
 
     [Test]

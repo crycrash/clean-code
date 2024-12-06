@@ -10,8 +10,6 @@ public class BoldTag : BaseTagHandler
             return false;
         if (index + 1 < text.Length && char.IsWhiteSpace(text[index + 1]))
             return false;
-        if (index - 1 >= 0 && char.IsDigit(text[index - 1]))
-            return false;
         return true;
     }
 }

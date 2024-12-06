@@ -10,19 +10,25 @@ public class HelperFunctions
     {
         for (int i = startIndex + 1; i < text.Length; i++)
         {
-            if (text[i] == '_' && !IsPartOfDoubleUnderscore(text, i) && IsNotFollowedByDigit(text, i))
+            if (text[i] == '_' && !IsPartOfDoubleUnderscore(text, i) && IsValidCloseSymbol(text, i))
             {
                 return i;
             }
         }
         return -1;
     }
-    private static bool IsNotFollowedByDigit(string text, int index)
+
+    private static bool IsValidCloseSymbol(string text, int index)
     {
         if (index + 1 < text.Length && char.IsDigit(text[index + 1]))
             return false;
         if (index - 1 >= 0 && char.IsDigit(text[index - 1]))
+        {
+            if (index + 1 == text.Length || text.Substring(index + 1).All(char.IsWhiteSpace))
+                return true;
+
             return false;
+        }
         return true;
     }
 

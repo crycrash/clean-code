@@ -9,13 +9,14 @@ public class ItailcTests
     [Test]
     public void Test_StandartItalicText()
     {
+        Md.Render("_abc_4").Should().Be("_abc_4");
+        Md.Render("_abc_4_").Should().Be("<em>abc_4</em>");
         Md.Render("_abc w_ a _b s_").Should().Be("<em>abc w</em> a <em>b s</em>");
         Md.Render("_aaaa_").Should().Be("<em>aaaa</em>");
         Md.Render("_aaaa_bbbb_cc_").Should().Be("<em>aaaa</em>bbbb<em>cc</em>");
         Md.Render("_aaaa_  bbb").Should().Be("<em>aaaa</em>  bbb");
         Md.Render("_aaaa_    _bbbb_ _cc_").Should().Be("<em>aaaa</em>    <em>bbbb</em> <em>cc</em>");
         Md.Render("_aaa   bbb_").Should().Be("<em>aaa   bbb</em>");
-        Md.Render("_abc_4_").Should().Be("<em>abc_4</em>");
         Md.Render("ab_c_de").Should().Be("ab<em>c</em>de");
         Md.Render("ab_c d_a").Should().Be("ab_c d_a");
         Md.Render("\\ _a_").Should().Be("\\ <em>a</em>");

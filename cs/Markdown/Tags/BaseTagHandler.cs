@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace Markdown.Tags;
 
 public abstract class BaseTagHandler : ITagHandler
@@ -11,13 +13,15 @@ public abstract class BaseTagHandler : ITagHandler
     {
         if (HelperFunctions.ContainsOnlyDash(text.Substring(startIndex)))
             return text.Length;
-        if (HelperFunctions.ContainsUnderscore(text))
-        {
-            if (CheckTagIntersections(text))
-                return text.Length;
-        }
+        if (HelperFunctions.ContainsUnderscore(text) && CheckTagIntersections(text))
+            return text.Length;
 
-        int endIndex = FindEndIndex(text, startIndex);
+        int endIndex;
+        if (startIndex + Symbol.Length < text.Length && char.IsDigit(text[startIndex + Symbol.Length]))
+            endIndex = FindEndIndexForDigit(text, startIndex);
+        else
+            endIndex = FindEndIndex(text, startIndex);
+
         if (endIndex == -1)
             return startIndex + Symbol.Length;
 
@@ -32,6 +36,65 @@ public abstract class BaseTagHandler : ITagHandler
 
         return startIndex + replacement.Length;
     }
+
+    private int FindEndIndexForDigit(string text, int startIndex)
+    {
+        int currentIndex = startIndex + Symbol.Length;
+
+        while (currentIndex < text.Length)
+        {
+            currentIndex = text.IndexOf(Symbol, currentIndex);
+            if (currentIndex == -1)
+                return -1;
+
+            if (currentIndex + Symbol.Length < text.Length && char.IsDigit(text[currentIndex + Symbol.Length]))
+            {
+                currentIndex += Symbol.Length;
+                continue;
+            }
+
+            if (currentIndex + Symbol.Length == text.Length || char.IsWhiteSpace(text[currentIndex + Symbol.Length]))
+                return currentIndex;
+
+            currentIndex += Symbol.Length;
+        }
+
+        return -1;
+    }
+
+    protected virtual int FindEndIndex(string text, int startIndex)
+    {
+        int currentIndex = startIndex + Symbol.Length;
+
+        while (currentIndex < text.Length)
+        {
+            currentIndex = text.IndexOf(Symbol, currentIndex);
+            if (currentIndex == -1)
+                return -1;
+
+            if (currentIndex + Symbol.Length < text.Length && char.IsDigit(text[currentIndex + Symbol.Length]))
+            {
+                currentIndex += Symbol.Length;
+                continue;
+            }
+            if (currentIndex > 0 && char.IsDigit(text[currentIndex - 1]))
+            {
+                if (currentIndex + Symbol.Length == text.Length ||
+                    text.Substring(currentIndex + Symbol.Length).All(char.IsWhiteSpace))
+                {
+                    return currentIndex;
+                }
+
+                currentIndex += Symbol.Length;
+                continue;
+            }
+
+            return currentIndex;
+        }
+
+        return -1;
+    }
+
 
     private bool CheckTagIntersections(string text)
     {
@@ -50,7 +113,7 @@ public abstract class BaseTagHandler : ITagHandler
                 {
                     if (HelperFunctions.AreSegmentsNested(segment1, segment2))
                         continue;
-                        
+
                     return true;
                 }
             }
@@ -77,28 +140,6 @@ public abstract class BaseTagHandler : ITagHandler
     {
         return HelperFunctions.ProcessNestedTag(ref text);
     }
-
-    protected virtual int FindEndIndex(string text, int startIndex)
-    {
-        int currentIndex = startIndex + Symbol.Length;
-
-        while (currentIndex < text.Length)
-        {
-            currentIndex = text.IndexOf(Symbol, currentIndex);
-            if (currentIndex == -1)
-                return -1;
-            if (currentIndex + Symbol.Length < text.Length && char.IsDigit(text[currentIndex + Symbol.Length]))
-            {
-                currentIndex += Symbol.Length;
-                continue;
-            }
-
-            return currentIndex;
-        }
-
-        return -1;
-    }
-
 
     protected virtual string ExtractContent(string text, int startIndex, int endIndex)
     {
