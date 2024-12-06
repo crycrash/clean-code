@@ -11,13 +11,21 @@ public class Md
             new HeadingTag(),
             new EscapeTag()
         ];
+    private readonly char[] tagChars;
 
-    public static string Render(string markdownString)
+    public Md(char[]? customTagChars = null)
+    {
+        tagChars = customTagChars ?? ['_', '#', '\\'];
+    }
+
+    private bool CanBeTag(char symbol) => tagChars.Contains(symbol);
+
+    public string Render(string markdownString)
     {
         int index = 0;
         while (index < markdownString.Length)
         {
-            if (HelperFunctions.CanBeTag(markdownString[index]))
+            if (CanBeTag(markdownString[index]))
             {
                 if (TryProcessTag(ref markdownString, ref index))
                     continue;

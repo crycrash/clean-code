@@ -32,8 +32,10 @@ public class HelperFunctions
         return true;
     }
 
-    public static string ProcessNestedTag(ref string text) =>
-        Md.Render(text);
+    public static string ProcessNestedTag(ref string text){
+        Md md = new Md(['_', '\\']);
+        return md.Render(text);
+    }
 
     public static bool ContainsWhiteSpaces(string text) =>
         text.Contains(' ') || string.IsNullOrWhiteSpace(text);

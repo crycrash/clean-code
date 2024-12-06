@@ -122,7 +122,6 @@ public abstract class BaseTagHandler : ITagHandler
         return false;
     }
 
-
     private bool AreTagsCorrectlyPositioned(string text, int startIndex, int endIndex, string content)
     {
         if (!content.Contains(' '))

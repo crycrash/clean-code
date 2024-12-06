@@ -22,6 +22,11 @@ public class HeadingTag : BaseTagHandler
         return startIndex + replacement.Length;
     }
 
+    protected override string ProcessNestedTag(ref string text)
+    {
+        return HelperFunctions.ProcessNestedTag(ref text);
+    }
+
     protected override string ExtractContent(string text, int startIndex, int endIndex)
     {
         startIndex = FindStartIndex(text, startIndex + 1);
