@@ -6,16 +6,11 @@ public class EscapeTag : BaseTagHandler
 
     private readonly char[] forbiddenChars = ['_', '\\'];
 
-    public override bool IsTagStart(string text, int index)
-    {
-        return text[index].ToString() == Symbol;
-
-    }
+    public override bool IsTagStart(string text, int index) => text[index].ToString() == Symbol;
 
     private bool CheckTag(string text, int startIndex)
     => (startIndex + 1 < text.Length && forbiddenChars.Contains(text[startIndex + 1]))
     || (startIndex + 3 < text.Length && text.Substring(startIndex + 1, 2) == "# ");
-
 
     public override int ProcessTag(ref string text, int startIndex)
     {

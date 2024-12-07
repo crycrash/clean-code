@@ -11,9 +11,7 @@ public class HelperFunctions
         for (int i = startIndex + 1; i < text.Length; i++)
         {
             if (text[i] == '_' && !IsPartOfDoubleUnderscore(text, i) && IsValidCloseSymbol(text, i))
-            {
                 return i;
-            }
         }
         return -1;
     }
@@ -50,9 +48,6 @@ public class HelperFunctions
     private static bool IsPartOfDoubleUnderscore(string text, int index) =>
         (index + 1 < text.Length && text[index + 1] == '_') ||
         (index > 0 && text[index - 1] == '_');
-
-    public static bool CanBeTag(char symbol) =>
-        tagChars.Contains(symbol);
 
     public static bool ContainsUnderscore(string text) => text.Contains('_');
 

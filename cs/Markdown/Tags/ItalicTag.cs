@@ -6,13 +6,8 @@ public class ItalicTag : BaseTagHandler
 
     public override bool IsTagStart(string text, int index) => text[index].ToString() == Symbol;
 
-    protected override int FindEndIndex(string text, int startIndex)
-    {
-        return HelperFunctions.FindCorrectCloseSymbolForItalic(text, startIndex + 1);
-    }
+    protected override int FindEndIndex(string text, int startIndex) =>
+    HelperFunctions.FindCorrectCloseSymbolForItalic(text, startIndex + 1);
 
-    protected override string ProcessNestedTag(ref string text)
-    {
-        return text;
-    }
+    protected override string ProcessNestedTag(ref string text) => text;
 }

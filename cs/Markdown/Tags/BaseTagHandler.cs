@@ -82,7 +82,7 @@ public abstract class BaseTagHandler : ITagHandler
             {
                 if (currentIndex + Symbol.Length == text.Length ||
                     text.Substring(currentIndex + Symbol.Length).All(char.IsWhiteSpace))
-                
+
                     return currentIndex;
 
                 currentIndex += Symbol.Length;
@@ -154,7 +154,8 @@ public abstract class BaseTagHandler : ITagHandler
         return text.Substring(0, startIndex) + replacement + text.Substring(endIndex + Symbol.Length);
     }
 
-    protected virtual int StringOnlySpases(ref string text, int endIndex, int symbolLength){
+    protected virtual int StringOnlySpases(ref string text, int endIndex, int symbolLength)
+    {
         text = text.Substring(endIndex + symbolLength);
         return endIndex;
     }

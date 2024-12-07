@@ -25,10 +25,8 @@ public class HeadingTag : BaseTagHandler
         return startIndex + replacement.Length;
     }
 
-    protected override string ProcessNestedTag(ref string text)
-    {
-        return HelperFunctions.ProcessNestedTag(ref text);
-    }
+    protected override string ProcessNestedTag(ref string text) => 
+        HelperFunctions.ProcessNestedTag(ref text);
 
     protected override string ExtractContent(string text, int startIndex, int endIndex)
     {
@@ -54,16 +52,14 @@ public class HeadingTag : BaseTagHandler
             if (!char.IsWhiteSpace(text[i]))
                 return i;
         }
-
         return -1;
     }
 
     protected override string ReplaceText(string text, int startIndex, int endIndex, string replacement)
     {
         if (endIndex < text.Length && text[endIndex] == '\n')
-        {
             return text.Substring(0, startIndex) + replacement + '\n' + text.Substring(endIndex + 1);
-        }
+        
         return text.Substring(0, startIndex) + replacement + text.Substring(endIndex);
     }
 }
