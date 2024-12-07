@@ -6,14 +6,17 @@ public class HeadingTag : BaseTagHandler
 
     public override bool IsTagStart(string text, int index)
     {
-        return text[index].ToString() == Symbol && index + 1 < text.Length &&
-        char.IsWhiteSpace(text[index + 1]);
+        return (text[index].ToString() == Symbol && index + 1 < text.Length &&
+        char.IsWhiteSpace(text[index + 1])) || HelperFunctions.ContainsOnlyHeading(text);
     }
 
     public override int ProcessTag(ref string text, int startIndex)
     {
         int endIndex = FindEndIndex(text, startIndex);
         string content = ExtractContent(text, startIndex, endIndex);
+        content = HelperFunctions.RemoveExtraSpaces(content);
+        if (HelperFunctions.ContainsOnlySpases(content) || HelperFunctions.ContainsOnlyHeading(content))
+            return StringOnlySpases(ref text, endIndex, 0);
 
         content = ProcessNestedTag(ref content);
         string replacement = WrapWithHtmlTag(content);
@@ -29,7 +32,9 @@ public class HeadingTag : BaseTagHandler
 
     protected override string ExtractContent(string text, int startIndex, int endIndex)
     {
-        startIndex = FindStartIndex(text, startIndex + 1);
+        startIndex = FindStartIndex(text, startIndex + 1, endIndex);
+        if (startIndex == -1)
+            return "";
         return text.Substring(startIndex, endIndex - startIndex);
     }
 
@@ -39,12 +44,12 @@ public class HeadingTag : BaseTagHandler
         return endIndex == -1 ? text.Length : endIndex;
     }
 
-    private int FindStartIndex(string text, int startIndex)
+    private int FindStartIndex(string text, int startIndex, int endIndex)
     {
-        if (string.IsNullOrEmpty(text))
+        if (string.IsNullOrWhiteSpace(text.Substring(startIndex)))
             return -1;
 
-        for (int i = startIndex; i < text.Length; i++)
+        for (int i = startIndex; i < endIndex; i++)
         {
             if (!char.IsWhiteSpace(text[i]))
                 return i;

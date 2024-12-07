@@ -26,7 +26,8 @@ public abstract class BaseTagHandler : ITagHandler
             return startIndex + Symbol.Length;
 
         string content = ExtractContent(text, startIndex, endIndex);
-
+        if (HelperFunctions.ContainsOnlySpases(content))
+            return StringOnlySpases(ref text, endIndex, Symbol.Length);
         if (!AreTagsCorrectlyPositioned(text, startIndex, endIndex, content))
             return startIndex + content.Length;
 
@@ -81,14 +82,12 @@ public abstract class BaseTagHandler : ITagHandler
             {
                 if (currentIndex + Symbol.Length == text.Length ||
                     text.Substring(currentIndex + Symbol.Length).All(char.IsWhiteSpace))
-                {
+                
                     return currentIndex;
-                }
 
                 currentIndex += Symbol.Length;
                 continue;
             }
-
             return currentIndex;
         }
 
@@ -153,5 +152,10 @@ public abstract class BaseTagHandler : ITagHandler
     protected virtual string ReplaceText(string text, int startIndex, int endIndex, string replacement)
     {
         return text.Substring(0, startIndex) + replacement + text.Substring(endIndex + Symbol.Length);
+    }
+
+    protected virtual int StringOnlySpases(ref string text, int endIndex, int symbolLength){
+        text = text.Substring(endIndex + symbolLength);
+        return endIndex;
     }
 }

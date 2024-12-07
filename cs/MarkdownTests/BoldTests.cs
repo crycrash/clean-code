@@ -62,6 +62,7 @@ public class BoldTests
     [Test]
     public void Test_BoldTextWithSpaces()
     {
+        md.Render("__        __").Should().Be("");
         md.Render("__ подчерки__").Should().Be("__ подчерки__");
         md.Render("__подчерки __").Should().Be("__подчерки __");
     }

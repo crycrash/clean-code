@@ -55,6 +55,7 @@ public class ItailcTests
     [Test]
     public void Test_ItalicTextWithSpaces()
     {
+        md.Render("_        _").Should().Be("");
         md.Render("_ подчерки_").Should().Be("_ подчерки_");
         md.Render("_подчерки _").Should().Be("_подчерки _");
     }

@@ -32,16 +32,20 @@ public class HelperFunctions
         return true;
     }
 
-    public static string ProcessNestedTag(ref string text){
+    public static string ProcessNestedTag(ref string text)
+    {
         Md md = new Md(['_', '\\']);
         return md.Render(text);
     }
 
-    public static bool ContainsWhiteSpaces(string text) =>
-        text.Contains(' ') || string.IsNullOrWhiteSpace(text);
-
     public static bool ContainsOnlyDash(string text) =>
         text.All(symbol => forbiddenChars.Contains(symbol));
+
+    public static bool ContainsOnlyHeading(string text) =>
+        text.All(symbol => symbol == '#');
+
+    public static bool ContainsOnlySpases(string text) =>
+        string.IsNullOrWhiteSpace(text) || string.IsNullOrEmpty(text);
 
     private static bool IsPartOfDoubleUnderscore(string text, int index) =>
         (index + 1 < text.Length && text[index + 1] == '_') ||
@@ -91,4 +95,8 @@ public class HelperFunctions
                (segment2[0] >= segment1[0] && segment2[1] <= segment1[1]);
     }
 
+    public static string RemoveExtraSpaces(string input)
+    {
+        return string.Join(" ", input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+    }
 }
