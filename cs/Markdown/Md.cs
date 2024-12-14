@@ -14,6 +14,7 @@ public class Md
             new ItalicTag(),
             new HeadingTag(),
             new EscapeTag(),
+            new LinkTag(),
             new DefaultTagHandler()
         };
     }

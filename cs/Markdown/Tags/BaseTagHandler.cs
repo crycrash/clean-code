@@ -94,7 +94,6 @@ public abstract class BaseTagHandler : ITagHandler
         return -1;
     }
 
-
     private bool CheckTagIntersections(string text)
     {
         (List<int> singleUnderscoreIndexes, List<int> doubleUnderscoreIndexes) = HelperFunctions.GetUnderscoreIndexes(text);

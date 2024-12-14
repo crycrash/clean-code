@@ -59,6 +59,8 @@ public class HelperFunctions
 
     public static bool ContainsUnderscore(string text) => text.Contains('_');
 
+    public static bool ContainsSquareBrackets(string text) => text.Contains('[');
+
     public static (List<int>, List<int>) GetUnderscoreIndexes(string text)
     {
         List<int> singleUnderscoreIndexes = new List<int>();
