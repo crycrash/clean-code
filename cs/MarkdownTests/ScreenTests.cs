@@ -4,7 +4,7 @@ namespace MarkdownTests;
 
 public class ScreenTests
 {
-    Md md;
+    private Md md;
 
     [SetUp]
     public void SetUp(){
@@ -13,7 +13,7 @@ public class ScreenTests
     [Test]
     public void Test_ScreenTests()
     {
-        Console.WriteLine("\\");
+        using var scope = new FluentAssertions.Execution.AssertionScope();
         md.Render("\\# aaa").Should().Be("# aaa", "Экранированный символ в начале. Экранирует заголовочный тэг");
         md.Render("\\#aa\\").Should().Be("\\#aa\\", "Экранированный символ в конце и начале, но тэг неправильно написан. Нет экранизации");
         md.Render("\\\\\\aaa").Should().Be("\\\\aaa", "Три экранированных символов и строка без тэгов. Экранируется 2 экранируемых символа");

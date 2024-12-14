@@ -6,7 +6,7 @@ namespace MarkdownTests;
 
 public class ItailcTests
 {
-    Md md;
+    private Md md;
 
     [SetUp]
     public void SetUp(){
@@ -15,6 +15,7 @@ public class ItailcTests
     [Test]
     public void Test_StandartItalicText()
     {
+        using var scope = new FluentAssertions.Execution.AssertionScope();
         md.Render("_abc_4").Should().Be("_abc_4");
         md.Render("_abc_4_").Should().Be("<em>abc_4</em>");
         md.Render("_abc w_ a _b s_").Should().Be("<em>abc w</em> a <em>b s</em>");
@@ -32,6 +33,7 @@ public class ItailcTests
     [Test]
     public void Test_NestedInItalicTags()
     {
+        using var scope = new FluentAssertions.Execution.AssertionScope();
         md.Render("_some __text__ in_").Should().Be("<em>some __text__ in</em>");
         md.Render("#  _aaa_").Should().Be("<h1><em>aaa</em></h1>");
         md.Render("_aaa__b__a_").Should().Be("<em>aaa__b__a</em>");
@@ -40,6 +42,7 @@ public class ItailcTests
     [Test]
     public void Test_ItalicPartOfWord()
     {
+        using var scope = new FluentAssertions.Execution.AssertionScope();
         md.Render("_нач_але").Should().Be("<em>нач</em>але");
         md.Render("сер_еди_не").Should().Be("сер<em>еди</em>не");
         md.Render("кон_це._").Should().Be("кон<em>це.</em>");
@@ -48,6 +51,7 @@ public class ItailcTests
     [Test]
     public void Test_ItalicSeveralWords()
     {
+        using var scope = new FluentAssertions.Execution.AssertionScope();
         md.Render("ра_зных сл_овах").Should().Be("ра_зных сл_овах");
         md.Render("ра_зных словах_").Should().Be("ра_зных словах_");
     }
@@ -55,6 +59,7 @@ public class ItailcTests
     [Test]
     public void Test_ItalicTextWithSpaces()
     {
+        using var scope = new FluentAssertions.Execution.AssertionScope();
         md.Render("_        _").Should().Be("");
         md.Render("_ подчерки_").Should().Be("_ подчерки_");
         md.Render("_подчерки _").Should().Be("_подчерки _");

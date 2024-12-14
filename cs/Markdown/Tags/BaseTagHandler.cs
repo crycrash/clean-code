@@ -16,7 +16,7 @@ public abstract class BaseTagHandler : ITagHandler
         if (HelperFunctions.ContainsUnderscore(text) && CheckTagIntersections(text))
             return text.Length;
 
-        int endIndex;
+        var endIndex = 0;
         if (startIndex + Symbol.Length < text.Length && char.IsDigit(text[startIndex + Symbol.Length]))
             endIndex = FindEndIndexForDigit(text, startIndex);
         else
@@ -25,14 +25,14 @@ public abstract class BaseTagHandler : ITagHandler
         if (endIndex == -1)
             return startIndex + Symbol.Length;
 
-        string content = ExtractContent(text, startIndex, endIndex);
+        var content = ExtractContent(text, startIndex, endIndex);
         if (HelperFunctions.ContainsOnlySpases(content))
-            return StringOnlySpases(ref text, endIndex, Symbol.Length);
+            return StringOnlySpaces(ref text, endIndex, Symbol.Length);
         if (!AreTagsCorrectlyPositioned(text, startIndex, endIndex, content))
             return startIndex + content.Length;
 
         content = ProcessNestedTag(ref content);
-        string replacement = WrapWithHtmlTag(content);
+        var replacement = WrapWithHtmlTag(content);
         text = ReplaceText(text, startIndex, endIndex, replacement);
 
         return startIndex + replacement.Length;
@@ -40,7 +40,7 @@ public abstract class BaseTagHandler : ITagHandler
 
     private int FindEndIndexForDigit(string text, int startIndex)
     {
-        int currentIndex = startIndex + Symbol.Length;
+        var currentIndex = startIndex + Symbol.Length;
 
         while (currentIndex < text.Length)
         {
@@ -65,7 +65,7 @@ public abstract class BaseTagHandler : ITagHandler
 
     protected virtual int FindEndIndex(string text, int startIndex)
     {
-        int currentIndex = startIndex + Symbol.Length;
+        var currentIndex = startIndex + Symbol.Length;
 
         while (currentIndex < text.Length)
         {
@@ -106,13 +106,11 @@ public abstract class BaseTagHandler : ITagHandler
         {
             for (int j = 0; j < doubleUnderscoreIndexes.Count - 1; j++)
             {
-                int[] segment1 = { singleUnderscoreIndexes[i], singleUnderscoreIndexes[i + 1] };
-                int[] segment2 = { doubleUnderscoreIndexes[j], doubleUnderscoreIndexes[j + 1] };
-                if (HelperFunctions.AreSegmentsIntersecting(segment1, segment2))
+                var segment1 = Tuple.Create(singleUnderscoreIndexes[i], singleUnderscoreIndexes[i + 1]);
+                var segment2 = Tuple.Create(doubleUnderscoreIndexes[j], doubleUnderscoreIndexes[j + 1]);
+                if (HelperFunctions.AreSegmentsIntersecting(segment1, segment2) &&
+                    !HelperFunctions.AreSegmentsNested(segment1, segment2))
                 {
-                    if (HelperFunctions.AreSegmentsNested(segment1, segment2))
-                        continue;
-
                     return true;
                 }
             }
@@ -121,7 +119,7 @@ public abstract class BaseTagHandler : ITagHandler
         return false;
     }
 
-    private bool AreTagsCorrectlyPositioned(string text, int startIndex, int endIndex, string content)
+    private static bool AreTagsCorrectlyPositioned(string text, int startIndex, int endIndex, string content)
     {
         if (!content.Contains(' '))
             return true;
@@ -154,7 +152,7 @@ public abstract class BaseTagHandler : ITagHandler
         return text.Substring(0, startIndex) + replacement + text.Substring(endIndex + Symbol.Length);
     }
 
-    protected virtual int StringOnlySpases(ref string text, int endIndex, int symbolLength)
+    protected virtual int StringOnlySpaces(ref string text, int endIndex, int symbolLength)
     {
         text = text.Substring(endIndex + symbolLength);
         return endIndex;

@@ -12,14 +12,14 @@ public class HeadingTag : BaseTagHandler
 
     public override int ProcessTag(ref string text, int startIndex)
     {
-        int endIndex = FindEndIndex(text, startIndex);
-        string content = ExtractContent(text, startIndex, endIndex);
+        var endIndex = FindEndIndex(text, startIndex);
+        var content = ExtractContent(text, startIndex, endIndex);
         content = HelperFunctions.RemoveExtraSpaces(content);
         if (HelperFunctions.ContainsOnlySpases(content) || HelperFunctions.ContainsOnlyHeading(content))
-            return StringOnlySpases(ref text, endIndex, 0);
+            return StringOnlySpaces(ref text, endIndex, 0);
 
         content = ProcessNestedTag(ref content);
-        string replacement = WrapWithHtmlTag(content);
+        var replacement = WrapWithHtmlTag(content);
         text = ReplaceText(text, startIndex, endIndex, replacement);
 
         return startIndex + replacement.Length;
@@ -38,7 +38,7 @@ public class HeadingTag : BaseTagHandler
 
     protected override int FindEndIndex(string text, int startIndex)
     {
-        int endIndex = text.IndexOf('\n', startIndex + 1);
+        var endIndex = text.IndexOf('\n', startIndex + 1);
         return endIndex == -1 ? text.Length : endIndex;
     }
 

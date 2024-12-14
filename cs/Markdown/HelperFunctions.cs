@@ -1,3 +1,4 @@
+using Markdown.Tags;
 namespace Markdown;
 
 public class HelperFunctions
@@ -32,7 +33,14 @@ public class HelperFunctions
 
     public static string ProcessNestedTag(ref string text)
     {
-        Md md = new Md(['_', '\\']);
+        List<ITagHandler> tagHandlers = new List<ITagHandler>
+        {
+            new BoldTag(),
+            new ItalicTag(),
+            new EscapeTag(),
+            new DefaultTagHandler()
+        };
+        Md md = new Md(tagHandlers);
         return md.Render(text);
     }
 
@@ -79,19 +87,19 @@ public class HelperFunctions
         return true;
     }
 
-    public static bool AreSegmentsIntersecting(int[] segment1, int[] segment2)
+    public static bool AreSegmentsIntersecting(Tuple<int, int> segment1, Tuple<int, int> segment2)
     {
-        return segment1[1] >= segment2[0] && segment1[0] <= segment2[1];
+        return segment1.Item2 >= segment2.Item1 && segment1.Item1 <= segment2.Item2;
     }
 
-    public static bool AreSegmentsNested(int[] segment1, int[] segment2)
+    public static bool AreSegmentsNested(Tuple<int, int> segment1, Tuple<int, int> segment2)
     {
-        return (segment1[0] >= segment2[0] && segment1[1] <= segment2[1]) ||
-               (segment2[0] >= segment1[0] && segment2[1] <= segment1[1]);
+        return (segment1.Item1 >= segment2.Item1 && segment1.Item2 <= segment2.Item2) ||
+               (segment2.Item1 >= segment1.Item1 && segment2.Item2 <= segment1.Item2);
     }
 
     public static string RemoveExtraSpaces(string input)
     {
-        return string.Join(" ", input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+        return string.Join(" ", input.Split(' ', StringSplitOptions.RemoveEmptyEntries));
     }
 }

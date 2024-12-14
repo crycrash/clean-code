@@ -4,48 +4,37 @@ namespace Markdown;
 
 public class Md
 {
-    private static readonly List<ITagHandler> TagHandlers =
-        [
+    private readonly List<ITagHandler> tagHandlers;
+
+    public Md(List<ITagHandler>? customTagHandlers = null)
+    {
+        tagHandlers = customTagHandlers ?? new List<ITagHandler>
+        {
             new BoldTag(),
             new ItalicTag(),
             new HeadingTag(),
-            new EscapeTag()
-        ];
-    private readonly char[] tagChars;
-
-    public Md(char[]? customTagChars = null)
-    {
-        tagChars = customTagChars ?? ['_', '#', '\\'];
+            new EscapeTag(),
+            new DefaultTagHandler()
+        };
     }
-
-    private bool CanBeTag(char symbol) => tagChars.Contains(symbol);
 
     public string Render(string markdownString)
     {
-        int index = 0;
+        var index = 0;
         while (index < markdownString.Length)
-        {
-            if (CanBeTag(markdownString[index]))
-            {
-                if (TryProcessTag(ref markdownString, ref index))
-                    continue;
-            }
-            index++;
-        }
+            TryProcessTag(ref markdownString, ref index);
 
         return markdownString;
     }
 
-    private static bool TryProcessTag(ref string markdownString, ref int index)
+    private void TryProcessTag(ref string markdownString, ref int index)
     {
-        foreach (var handler in TagHandlers)
+        foreach (var handler in tagHandlers)
         {
-            if (handler.IsTagStart(markdownString, index))
-            {
+            if (handler.IsTagStart(markdownString, index)){
                 index = handler.ProcessTag(ref markdownString, index);
-                return true;
+                break;
             }
         }
-        return false;
     }
 }
