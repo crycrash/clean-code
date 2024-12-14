@@ -58,4 +58,13 @@ public class LinkTests
         md.Render("Link](https://example.com)").Should().Be("Link](https://example.com)");
         md.Render("[Link]https://example.com").Should().Be("[Link]https://example.com");
     }
+
+    [Test]
+    public void Test_LinksWithNestedFormatting()
+    {
+        using var scope = new FluentAssertions.Execution.AssertionScope();
+        md.Render("[__Bold Link__](https://example.com)").Should().Be("<a href=https://example.com><strong>Bold Link</strong></a>");
+        md.Render("[_Italic Link_](https://example.com)").Should().Be("<a href=https://example.com><em>Italic Link</em></a>");
+        md.Render("[__Bold__ and _Italic_](https://example.com)").Should().Be("<a href=https://example.com><strong>Bold</strong> and <em>Italic</em></a>");
+    }
 }

@@ -14,6 +14,7 @@ public class LinkTag : BaseTagHandler
         if (endIndexOfNameLink == -1)
             return startIndex + 1;
         var nameLink = ExtractContent(text, startIndex, endIndexOfNameLink);
+        nameLink = ProcessNestedTag(ref nameLink);
         var startIndexOfLink = FindStartIndexOfLink(text, endIndexOfNameLink);
         if (startIndexOfLink == -1)
             return startIndex + 1;
